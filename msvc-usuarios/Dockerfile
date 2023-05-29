@@ -38,3 +38,6 @@ ENTRYPOINT ["java", "-jar", "./msvc-usuarios-0.0.1-SNAPSHOT.jar"]
 # 2 - docker run -d -p 3307:3306 --name mysql8 --network spring -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=msvc_usuarios -v db-mysql:/var/lib/mysql mysql:8
 # 3 - docker pull postgres:14-alpine
 # 4 - docker run -d -p 5433:5432 --name postgres14 --network spring -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=msvc_cursos postgres:14-alpine
+
+#### pasandole el puerto como una variable de entorno (-e PORT=8001)
+# - docker run -p 8001:8001 -d --name msvc-usuarios --network spring -e PORT=8001 usuarios
