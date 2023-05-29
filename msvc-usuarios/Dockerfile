@@ -1,18 +1,20 @@
 FROM openjdk:17-jdk-alpine as builder
 
-WORKDIR /app/msvc-usuarios
+ARG MSVC_NAME=msvc-usuarios
+
+WORKDIR /app/$MSVC_NAME
 
 COPY ./pom.xml /app
-COPY ./msvc-usuarios/.mvn ./.mvn
-COPY ./msvc-usuarios/mvnw .
-COPY ./msvc-usuarios/pom.xml .
+COPY ./$MSVC_NAME/.mvn ./.mvn
+COPY ./$MSVC_NAME/mvnw .
+COPY ./$MSVC_NAME/pom.xml .
 
 # se limpia, se empaqueta (nada porq no hay sources) y se skipea la compilacion de los tests y
 # del main, o sea, solo descarga las dependencias y nada mas
 RUN ./mvnw clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/
 # alternantiva RUN ./mvnm dependency:go-offline
 
-COPY ./msvc-usuarios/src ./src
+COPY ./$MSVC_NAME/src ./src
 
 RUN ./mvnw clean package -DskipTests
 
@@ -22,9 +24,14 @@ WORKDIR /app
 
 RUN mkdir ./logs
 
-COPY --from=builder /app/msvc-usuarios/target/msvc-usuarios-0.0.1-SNAPSHOT.jar .
+ARG MSVC_NAME=msvc-usuarios
+ARG TARGET_FOLDER=/app/$MSVC_NAME/target
 
-ENV PORT 8001
+COPY --from=builder $TARGET_FOLDER/msvc-usuarios-0.0.1-SNAPSHOT.jar .
+
+ARG PORT_APP=8001
+
+ENV PORT $PORT_APP
 
 EXPOSE $PORT
 
@@ -42,5 +49,8 @@ ENTRYPOINT ["java", "-jar", "./msvc-usuarios-0.0.1-SNAPSHOT.jar"]
 #### pasandole el puerto como una variable de entorno (-e PORT=8001)
 # - docker run -p 8001:8001 -d --name msvc-usuarios --network spring -e PORT=8001 usuarios
 
-#### pasandole el puerto como una variable de entorno en un archivo .env (PORT=8001)
+#### pasandole el puerto como una variable de entorno en un archivo .env (--env-file ./msvc-usuarios/.env)
 # - docker run -p 8001:8001 -d --name msvc-usuarios --network spring --env-file ./msvc-usuarios/.env usuarios
+
+#### pasandole el puerto como un argumento en la construccion de la imagenenv (--build-arg PORT_APP=8001)
+# -  docker build -t usuarios . -f ./msvc-usuarios/Dockerfile --build-arg PORT_APP=8001
