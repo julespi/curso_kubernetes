@@ -41,3 +41,6 @@ ENTRYPOINT ["java", "-jar", "./msvc-usuarios-0.0.1-SNAPSHOT.jar"]
 
 #### pasandole el puerto como una variable de entorno (-e PORT=8001)
 # - docker run -p 8001:8001 -d --name msvc-usuarios --network spring -e PORT=8001 usuarios
+
+#### pasandole el puerto como una variable de entorno en un archivo .env (PORT=8001)
+# - docker run -p 8001:8001 -d --name msvc-usuarios --network spring --env-file ./msvc-usuarios/.env usuarios
