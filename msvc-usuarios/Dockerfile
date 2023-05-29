@@ -1,6 +1,8 @@
+ARG MSVC_NAME=msvc-usuarios
+
 FROM openjdk:17-jdk-alpine as builder
 
-ARG MSVC_NAME=msvc-usuarios
+ARG MSVC_NAME
 
 WORKDIR /app/$MSVC_NAME
 
@@ -24,7 +26,7 @@ WORKDIR /app
 
 RUN mkdir ./logs
 
-ARG MSVC_NAME=msvc-usuarios
+ARG MSVC_NAME
 ARG TARGET_FOLDER=/app/$MSVC_NAME/target
 
 COPY --from=builder $TARGET_FOLDER/msvc-usuarios-0.0.1-SNAPSHOT.jar .
