@@ -31,7 +31,9 @@ services:
 
   msvc-usuarios:
     container_name: msvc-usuarios
-    image: usuarios:latest
+    build:
+      context: ./
+      dockerfile: ./msvc-usuarios/Dockerfile
     ports:
       - "8001:8001"
     env_file: ./msvc-usuarios/.env
@@ -43,7 +45,9 @@ services:
 
   msvc-cursos:
     container_name: msvc-cursos
-    image: cursos:latest
+    build:
+      context: ./
+      dockerfile: ./msvc-cursos/Dockerfile
     ports:
       - "8002:8002"
     env_file: ./msvc-cursos/.env
@@ -51,6 +55,7 @@ services:
       - spring
     depends_on:
       - postgres14
+      - msvc-usuarios
     restart: always
 
 volumes:
@@ -65,3 +70,12 @@ networks:
 
 #### levantar todo con docker compose
 # - docker-compose up -d
+
+#### baja y elimina los contenedores
+# - docker-compose down
+
+#### levanta y construye todas las iamgenes de forma forzada
+# - docker-compose up --build -d
+
+#### solo construye todas las iamgenes de forma forzada
+# - docker-compose build
