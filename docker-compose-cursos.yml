@@ -1,0 +1,55 @@
+version: "3.9"
+services:
+
+  postgres14:
+    container_name: postgres14
+    image: postgres:14-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: msvc_cursos
+    volumes:
+      - db-postgres:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - spring
+
+  msvc-cursos:
+    container_name: msvc-cursos
+    image: julespi/cursos
+    ports:
+      - "8002:8002"
+    environment:
+      PORT: 8002
+      DB_HOST: postgres14:5432
+      DB_DATABASE: msvc_cursos
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      USUARIOS_URL: msvc-usuarios:8001
+    networks:
+      - spring
+    depends_on:
+      - postgres14
+      - msvc-usuarios
+    restart: always
+
+volumes:
+  db-postgres:
+    name: db-postgres
+
+networks:
+  spring:
+    name: spring
+
+#### levantar todo con docker compose
+# - docker-compose up -d
+
+#### baja y elimina los contenedores
+# - docker-compose down
+
+#### levanta y construye todas las iamgenes de forma forzada
+# - docker-compose up --build -d
+
+#### solo construye todas las iamgenes de forma forzada
+# - docker-compose build
