@@ -31,13 +31,16 @@ services:
 
   msvc-usuarios:
     container_name: msvc-usuarios
-#    build:
-#      context: ./
-#      dockerfile: ./msvc-usuarios/Dockerfile
     image: julespi/usuarios
     ports:
       - "8001:8001"
-    env_file: ./msvc-usuarios/.env
+    environment:
+      PORT: 8001
+      DB_HOST: mysql8:3306
+      DB_DATABASE: msvc_usuarios
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      CURSOS_URL: msvc-cursos:8002
     networks:
       - spring
     depends_on:
@@ -46,13 +49,16 @@ services:
 
   msvc-cursos:
     container_name: msvc-cursos
-#    build:
-#      context: ./
-#      dockerfile: ./msvc-cursos/Dockerfile
     image: julespi/cursos
     ports:
       - "8002:8002"
-    env_file: ./msvc-cursos/.env
+    environment:
+      PORT: 8002
+      DB_HOST: postgres14:5432
+      DB_DATABASE: msvc_cursos
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      USUARIOS_URL: msvc-usuarios:8001
     networks:
       - spring
     depends_on:
